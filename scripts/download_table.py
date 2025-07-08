@@ -149,9 +149,8 @@ try:
             # Take screenshot and save to parent directory
             parent_dir = os.path.abspath(os.path.join(download_dir, os.pardir))
             screenshot_path = os.path.join(parent_dir, f"screenshot_filial{id_value}.png")
-
-driver.save_screenshot(screenshot_path)
-logging.info(f"Screenshot saved to {screenshot_path}")
+            driver.save_screenshot(screenshot_path)
+            logging.info(f"Screenshot saved to {screenshot_path}")
             
         # clearing the selections to move on to the next
         logging.info("Clearing selection...")
