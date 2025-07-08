@@ -50,7 +50,7 @@ prefs = {
     "download.default_directory": download_dir,  # set download path
     "plugins.always_open_pdf_externally": True, # auto-downloads pdf files instead of opening in new window
     "download.open_pdf_in_system_reader": False,
-    "pdfjs.disabled": True  # Disable built-in PDF viewer
+    "pdfjs.disabled": True,  # Disable built-in PDF viewer
     "download.prompt_for_download": False,  # disable prompt
     "directory_upgrade": True,  # auto-overwrite existing files
     "safebrowsing.enabled": False,  # disable safe browsing (meh)
