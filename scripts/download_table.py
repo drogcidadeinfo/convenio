@@ -76,7 +76,9 @@ try:
     WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
     
     for id_value in ID_LIST:
-        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "agrup_fil_2"))).click()
+        elem = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "agrup_fil_2")))
+        driver.execute_script("arguments[0].scrollIntoView(true);", elem)
+        elem.click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel_contas_2"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_1"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("15")
@@ -110,7 +112,7 @@ try:
 
         # log download start
         logging.info("Download has started.")
-        time.sleep(2)
+        time.sleep(10)
 
         # get the most recent downloaded file
         files = os.listdir(download_dir)
