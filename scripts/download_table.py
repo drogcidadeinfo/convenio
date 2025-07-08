@@ -92,6 +92,7 @@ try:
         elem = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "agrup_fil_2")))
         driver.execute_script("arguments[0].scrollIntoView(true);", elem)
         elem.click()
+        driver.save_screenshot("no_button.png")
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel_contas_2"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_1"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("15")
@@ -153,6 +154,7 @@ try:
         # clearing the selections to move on to the next
         logging.info("Clearing selection...")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "limpar"))).click()
+        driver.save_screenshot("clearing_section.png")
 
 finally:
     driver.quit()
