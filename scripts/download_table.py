@@ -41,7 +41,9 @@ chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--remote-debugging-port=9222")
 chrome_options.add_argument("--disable-popup-blocking")
 chrome_options.add_argument("--disable-dev-shm-usage")
-chrome_options.add_argument("--start-fullscreen")  # True fullscreen mode
+chrome_options.add_argument("--window-size=1920,1080")  # Set dimensions
+chrome_options.add_argument("--start-maximized")  # Maximize window
+chrome_options.add_argument("--force-device-scale-factor=1")  # Prevent scaling
 
 prefs = {
     "download.default_directory": download_dir,  # set download path
