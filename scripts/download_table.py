@@ -30,7 +30,7 @@ start_date = report_date - timedelta(days=1) if report_date.weekday() == 6 else 
 inicio = f"{start_date.strftime('%d/%m/%Y')}"  
 fim = f"{report_date.strftime('%d/%m/%Y')}"
 
-download_dir = os.getcwd()  
+download_dir = '/home/runner/work/convenio/convenio/scripts'
 
 # set up chrome options for headless mode/configure download behavior
 chrome_options = Options()
