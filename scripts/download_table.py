@@ -30,7 +30,7 @@ start_date = report_date - timedelta(days=1) if report_date.weekday() == 6 else 
 inicio = f"{start_date.strftime('%d/%m/%Y')}"  
 fim = f"{report_date.strftime('%d/%m/%Y')}"
 
-download_dir = '/home/runner/work/convenio/convenio/scripts'
+download_dir = os.getcwd()
 
 # set up chrome options for headless mode/configure download behavior
 chrome_options = Options()
@@ -38,7 +38,7 @@ chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-gpu")
 chrome_options.add_argument("--enable-downloads")  # Explicitly enable downloads
-chrome_options.add_argument("--disable-extensions")
+# chrome_options.add_argument("--disable-extensions")
 chrome_options.add_argument("--remote-debugging-port=9222")
 chrome_options.add_argument("--disable-popup-blocking")
 chrome_options.add_argument("--disable-dev-shm-usage")
@@ -53,7 +53,6 @@ prefs = {
     "pdfjs.disabled": True,  # Disable built-in PDF viewer
     "download.prompt_for_download": False,  # disable prompt
     "directory_upgrade": True,  # auto-overwrite existing files
-    "safebrowsing.enabled": False,  # disable safe browsing (meh)
     "safebrowsing.disable_download_protection": True
 }
 chrome_options.add_experimental_option("prefs", prefs)
@@ -89,10 +88,7 @@ try:
     WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
     
     for id_value in ID_LIST:
-        elem = WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "agrup_fil_2")))
-        driver.execute_script("arguments[0].scrollIntoView(true);", elem)
-        elem.click()
-        driver.save_screenshot("no_button.png")
+        WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "agrup_fil_2"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel_contas_2"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_1"))).click()
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("15")
@@ -150,11 +146,16 @@ try:
             logging.info(f"File renamed to {new_filename}. Size: {file_size} bytes")
         else:
             logging.error("Download failed. No files found.")
+            # Take screenshot and save to parent directory
+            parent_dir = os.path.abspath(os.path.join(download_dir, os.pardir))
+            screenshot_path = os.path.join(parent_dir, f"screenshot_filial{id_value}.png")
+
+driver.save_screenshot(screenshot_path)
+logging.info(f"Screenshot saved to {screenshot_path}")
             
         # clearing the selections to move on to the next
         logging.info("Clearing selection...")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "limpar"))).click()
-        driver.save_screenshot("clearing_section.png")
 
 finally:
     driver.quit()
