@@ -36,6 +36,10 @@ download_dir = os.getcwd()
 chrome_options = Options()
 chrome_options.add_argument("--headless")  
 chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--disable-extensions")
+chrome_options.add_argument("--remote-debugging-port=9222")
+chrome_options.add_argument("--disable-popup-blocking")
 chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--start-fullscreen")  # True fullscreen mode
 
@@ -57,6 +61,10 @@ driver = webdriver.Chrome(options=chrome_options)
 try:
     logging.info("Navigate to the target URL and login")
     driver.get("http://drogcidade.ddns.net:4647/sgfpod1/Login.pod")
+    
+    # Add this at startup
+    logging.info(f"Download directory set to: {download_dir}")
+    os.makedirs(download_dir, exist_ok=True)
 
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "id_cod_usuario"))).send_keys(username)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "nom_senha"))).send_keys(password)
