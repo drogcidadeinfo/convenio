@@ -81,7 +81,7 @@ try:
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "sideMenuSearch")))
     driver.find_element(By.ID, "sideMenuSearch").send_keys("Contas Receber ou Recebidas")
     driver.find_element(By.ID, "sideMenuSearch").click()
-    driver.implicitly_wait(2)
+    time.sleep(5)
 
     driver.find_element(By.CSS_SELECTOR, '[title="Contas Receber ou Recebidas"]').click()
 
@@ -89,32 +89,45 @@ try:
     
     for id_value in ID_LIST:
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "agrup_fil_2"))).click()
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel_contas_2"))).click()
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_1"))).click()
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("15")
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys(Keys.ENTER)
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("16")
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys(Keys.ENTER)
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("76")
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys(Keys.ENTER)
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_2"))).click()
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "selecao_periodo_1"))).click()
+        time.sleep(5)
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel2_1"))).click()
+        time.sleep(5)
     
         # start and end dates
         driver.find_element(By.ID, "dat_init").send_keys(inicio)
+        time.sleep(5)
         driver.find_element(By.ID, "dat_fim").send_keys(fim)
+        time.sleep(5)
         
         # report format; downloads pdf file
-        driver.find_element(By.ID, "saida_1").click() 
+        driver.find_element(By.ID, "saida_1").click()
+        time.sleep(5)
         
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_0"))).click()
+        time.sleep(5)
         
         input_elem = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_filvendEntrada")))
         input_elem.clear()
         input_elem.send_keys(str(id_value))
         input_elem.send_keys(Keys.ENTER)
-        time.sleep(2)
+        time.sleep(5)
         
         # trigger report download
         logging.info("Triggering report download...")
@@ -122,7 +135,7 @@ try:
 
         # log download start
         logging.info("Download has started.")
-        time.sleep(10)
+        time.sleep(15)
 
         # get the most recent downloaded file
         files = os.listdir(download_dir)
@@ -155,6 +168,7 @@ try:
         # clearing the selections to move on to the next
         logging.info("Clearing selection...")
         WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "limpar"))).click()
+        time.sleep(15)
 
 finally:
     driver.quit()
