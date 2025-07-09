@@ -1,7 +1,6 @@
 import os
 import time
 import logging
-import shutil
 from datetime import datetime, timedelta
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -9,135 +8,129 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
 
-# set up logging config
+# ─── Config ────────────────────────────────────────────────────
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Environment variables
 username = os.getenv("username")
 password = os.getenv("password")
 
-ID_LIST = [1, 2, 4, 9, 10, 12, 15, 18]
-
 if not username or not password:
-    raise ValueError("Environment variables 'user' and/or 'password' not set.")
+    raise ValueError("Environment variables 'username' and/or 'password' not set.")
 
-# Calculate date range
+# Calculate dates
 today = datetime.today()
 report_date = today - timedelta(days=1)
 start_date = report_date - timedelta(days=1) if report_date.weekday() == 6 else report_date
-inicio = f"{start_date.strftime('%d/%m/%Y')}"  
-fim = f"{report_date.strftime('%d/%m/%Y')}"
+inicio = start_date.strftime('%d/%m/%Y')
+fim = report_date.strftime('%d/%m/%Y')
 
-# Setup download directory
+# ─── Chrome Setup ──────────────────────────────────────────────
 DOWNLOAD_DIR = os.getcwd()
 
-# Set Chrome options first
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--window-size=1920,1080")
+chrome_options.add_argument("--start-maximized")
+chrome_options.add_argument("--force-device-scale-factor=1")
 chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://drogcidade.ddns.net:4647/sgfpod1/Login.pod")
-chrome_options.add_argument("--window-size=1920,1080")  # Set dimensions
-chrome_options.add_argument("--start-maximized")  # Maximize window
-chrome_options.add_argument("--force-device-scale-factor=1")  # Prevent scaling
 chrome_options.add_experimental_option("prefs", {
     "download.default_directory": DOWNLOAD_DIR,
     "plugins.always_open_pdf_externally": True,
     "download.prompt_for_download": False,
 })
 
-# Then configure the WebDriver service
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
-# initialize webdriver
-# driver = webdriver.Chrome(options=chrome_options)
-
-# start download process 
+# ─── Start Automation ──────────────────────────────────────────
 try:
-    logging.info("Navigate to the target URL and login")
+    logging.info("Navigating to login page...")
     driver.get("http://drogcidade.ddns.net:4647/sgfpod1/Login.pod")
-    
-    # Add this at startup
-    logging.info(f"Download directory set to: {DOWNLOAD_DIR}")
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "id_cod_usuario"))).send_keys(username)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "nom_senha"))).send_keys(password)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.NAME, "login"))).click()
-
-    # wait til page loads completely
     WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
 
-    # access "Compras Fornecedores"
+    # Navigate menus
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "sideMenuSearch")))
     driver.find_element(By.ID, "sideMenuSearch").send_keys("Contas Receber ou Recebidas")
     driver.find_element(By.ID, "sideMenuSearch").click()
     driver.implicitly_wait(2)
 
     driver.find_element(By.CSS_SELECTOR, '[title="Contas Receber ou Recebidas"]').click()
-
     WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
-    
 
+    # Fill report filters
     WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "agrup_fil_2"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel_contas_2"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_1"))).click()
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("15")
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys(Keys.ENTER)
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("16")
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys(Keys.ENTER)
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys("76")
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada"))).send_keys(Keys.ENTER)
+    
+    empresas = ["15", "16", "76"]
+    for cod in empresas:
+        el = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "cod_empresaEntrada")))
+        el.send_keys(cod)
+        el.send_keys(Keys.ENTER)
+
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_2"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "selecao_periodo_1"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel2_1"))).click()
-    
-    # start and end dates
+
     driver.find_element(By.ID, "dat_init").send_keys(inicio)
     driver.find_element(By.ID, "dat_fim").send_keys(fim)
-        
-    # report format; downloads pdf file
-    driver.find_element(By.ID, "saida_1").click() 
-        
+    driver.find_element(By.ID, "saida_1").click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_0"))).click()
-        
+
     filial = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_filvendEntrada")))
-    filial.send_keys(str("1"))
+    filial.send_keys("1")
     filial.send_keys(Keys.ENTER)
+
     time.sleep(2)
-        
-    # trigger report download
+
+    # Trigger download (opens in new window/tab)
     logging.info("Triggering report download...")
-    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "runReport"))).click()
-    # log download start
-    logging.info("Download has started.")
+    main_window = driver.current_window_handle
+    driver.find_element(By.ID, "runReport").click()
 
-    directory = DOWNLOAD_DIR
-    files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-    
-    print("Only files:")
-    for file in files:
-        print(file)
+    # Wait for new window
+    time.sleep(3)
+    all_windows = driver.window_handles
 
-    # get the most recent downloaded file
-    files = os.listdir(DOWNLOAD_DIR)
-    downloaded_files = [f for f in files if f.endswith('.crdownload')]
-    if downloaded_files:
-        # sort files by modifi time
-        downloaded_files.sort(key=lambda x: os.path.getmtime(os.path.join(DOWNLOAD_DIR, x)))
-        most_recent_file = downloaded_files[-1]  # get the most recent file
-        downloaded_file_path = os.path.join(DOWNLOAD_DIR, most_recent_file)
+    if len(all_windows) > 1:
+        new_window = [w for w in all_windows if w != main_window][0]
+        driver.switch_to.window(new_window)
+        time.sleep(2)
+        pdf_url = driver.current_url
+        logging.info(f"PDF URL detected: {pdf_url}")
 
-        # log the final file path and size
-        file_size = os.path.getsize(downloaded_file_path)
-        logging.info(f"Download completed successfully. File path: {downloaded_file_path}, Size: {file_size} bytes")
+        # Visit PDF URL again (download should be forced)
+        driver.get(pdf_url)
+        time.sleep(5)
+
+        driver.close()
+        driver.switch_to.window(main_window)
     else:
-        logging.error("Download failed. No files found.")
+        logging.warning("No new window detected. Report may not have opened.")
+
+    # Wait for file to finish downloading
+    logging.info("Waiting for download to complete...")
+    time.sleep(10)
+
+    # Check for .pdf file
+    pdf_files = [f for f in os.listdir(DOWNLOAD_DIR) if f.endswith('.pdf')]
+    if pdf_files:
+        pdf_files.sort(key=lambda f: os.path.getmtime(os.path.join(DOWNLOAD_DIR, f)))
+        latest_pdf = pdf_files[-1]
+        full_path = os.path.join(DOWNLOAD_DIR, latest_pdf)
+        file_size = os.path.getsize(full_path)
+        logging.info(f"Download successful: {latest_pdf} ({file_size} bytes)")
+    else:
+        logging.error("Download failed. No .pdf file found.")
 
 finally:
     driver.quit()
