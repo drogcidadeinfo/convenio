@@ -223,6 +223,7 @@ try:
 
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_2"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "selecao_periodo_1"))).click()
+    time.sleep(5)
 
     driver.find_element(By.ID, "dat_init").send_keys(inicio)
     time.sleep(5)
