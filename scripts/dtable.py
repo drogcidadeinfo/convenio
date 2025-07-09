@@ -166,9 +166,11 @@ fim = report_date.strftime('%d/%m/%Y')
 DOWNLOAD_DIR = os.getcwd()
 
 chrome_options = Options()
-chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless=new")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
+chrome_options.add_argument("--disable-software-rasterizer")
 chrome_options.add_argument("--window-size=1920,1080")
 chrome_options.add_argument("--start-maximized")
 chrome_options.add_argument("--force-device-scale-factor=1")
@@ -233,6 +235,9 @@ try:
     # Run report
     logging.info("Triggering report download...")
     driver.find_element(By.ID, "runReport").click()
+    driver.save_screenshot("debug_github_screenshot.png")
+    print("Screenshot saved for GitHub debugging.")
+
     time.sleep(3)
 
     # Get the PDF URL
