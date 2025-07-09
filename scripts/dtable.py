@@ -13,9 +13,6 @@ from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.service import Service
 
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=chrome_options)
-
 # set up logging config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -35,8 +32,10 @@ start_date = report_date - timedelta(days=1) if report_date.weekday() == 6 else 
 inicio = f"{start_date.strftime('%d/%m/%Y')}"  
 fim = f"{report_date.strftime('%d/%m/%Y')}"
 
-DOWNLOAD_DIR = os.getcwd()  
+# Setup download directory
+DOWNLOAD_DIR = os.getcwd()
 
+# Set Chrome options first
 chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
@@ -47,6 +46,7 @@ chrome_options.add_experimental_option("prefs", {
     "download.prompt_for_download": False,
 })
 
+# Then configure the WebDriver service
 service = Service(ChromeDriverManager().install())
 driver = webdriver.Chrome(service=service, options=chrome_options)
 
@@ -121,13 +121,13 @@ try:
     time.sleep(10)
 
     # get the most recent downloaded file
-    files = os.listdir(download_dir)
+    files = os.listdir(DOWNLOAD_DIR)
     downloaded_files = [f for f in files if f.endswith('.pdf')]
     if downloaded_files:
         # sort files by modifi time
-        downloaded_files.sort(key=lambda x: os.path.getmtime(os.path.join(download_dir, x)))
+        downloaded_files.sort(key=lambda x: os.path.getmtime(os.path.join(DOWNLOAD_DIR, x)))
         most_recent_file = downloaded_files[-1]  # get the most recent file
-        downloaded_file_path = os.path.join(download_dir, most_recent_file)
+        downloaded_file_path = os.path.join(DOWNLOAD_DIR, most_recent_file)
 
         # log the final file path and size
         file_size = os.path.getsize(downloaded_file_path)
