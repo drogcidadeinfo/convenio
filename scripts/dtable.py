@@ -35,13 +35,6 @@ fim = f"{report_date.strftime('%d/%m/%Y')}"
 # Setup download directory
 DOWNLOAD_DIR = os.getcwd()
 
-directory = DOWNLOAD_DIR
-files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
-
-print("Only files:")
-for file in files:
-    print(file)
-
 # Set Chrome options first
 chrome_options = Options()
 chrome_options.add_argument("--headless")
@@ -120,15 +113,15 @@ try:
     # trigger report download
     logging.info("Triggering report download...")
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "runReport"))).click()
+    # log download start
+    logging.info("Download has started.")
 
-    # log download start
-    logging.info("Download has started.")
-    time.sleep(10)
-        
-    # log download start
-    logging.info("Download has started.")
-    # wait for download to complete
-    time.sleep(10)
+    directory = DOWNLOAD_DIR
+    files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+    
+    print("Only files:")
+    for file in files:
+        print(file)
 
     # get the most recent downloaded file
     files = os.listdir(DOWNLOAD_DIR)
