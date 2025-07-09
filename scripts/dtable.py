@@ -220,11 +220,13 @@ try:
 
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_2"))).click()
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "selecao_periodo_1"))).click()
-    WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "sel2_1"))).click()
 
     driver.find_element(By.ID, "dat_init").send_keys(inicio)
+    time.sleep(5)
     driver.find_element(By.ID, "dat_fim").send_keys(fim)
-    driver.find_element(By.ID, "saida_1").click()
+    time.sleep(5)
+    driver.save_screenshot("debug_github_screenshot.png")
+    print("Screenshot saved for GitHub debugging.")
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_0"))).click()
 
     filial = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_filvendEntrada")))
