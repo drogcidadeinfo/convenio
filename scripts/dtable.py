@@ -238,7 +238,7 @@ try:
     driver.save_screenshot("debug_github_screenshot.png")
     print("Screenshot saved for GitHub debugging.")
 
-    time.sleep(3)
+    time.sleep(15)
 
     # Get the PDF URL
     pdf_url = driver.current_url
