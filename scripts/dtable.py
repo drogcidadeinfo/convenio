@@ -11,6 +11,10 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.service import Service
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 # set up logging config
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -43,10 +47,12 @@ chrome_options.add_experimental_option("prefs", {
     "plugins.always_open_pdf_externally": True,
     "download.prompt_for_download": False,
 })
-driver = webdriver.Chrome(ChromeDriverManager().install(), options=chrome_options)
+
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
 # initialize webdriver
-driver = webdriver.Chrome(options=chrome_options)
+# driver = webdriver.Chrome(options=chrome_options)
 
 # start download process 
 try:
