@@ -40,6 +40,7 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--unsafely-treat-insecure-origin-as-secure=http://drogcidade.ddns.net:4647/sgfpod1/Login.pod")
 chrome_options.add_argument("--window-size=1920,1080")  # Set dimensions
 chrome_options.add_argument("--start-maximized")  # Maximize window
 chrome_options.add_argument("--force-device-scale-factor=1")  # Prevent scaling
