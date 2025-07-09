@@ -143,6 +143,7 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 
 # ─── Logging ──────────────────────────────────────────────────
@@ -238,21 +239,36 @@ try:
     pdf_url = driver.current_url
     logging.info(f"Detected PDF URL: {pdf_url}")
 
-    # Extract cookies
-    session_cookies = get_cookies_as_dict(driver)
-
-    # Download via requests
-    response = requests.get(pdf_url, cookies=session_cookies)
-
-    if response.ok and "application/pdf" in response.headers.get("Content-Type", ""):
-        pdf_filename = f"relatorio_{report_date.strftime('%Y%m%d')}.pdf"
-        pdf_path = os.path.join(DOWNLOAD_DIR, pdf_filename)
-        with open(pdf_path, "wb") as f:
-            f.write(response.content)
-        logging.info(f"PDF downloaded successfully via requests to: {pdf_path}")
+    # Set download behavior BEFORE triggering the PDF URL
+    driver.execute_cdp_cmd("Page.setDownloadBehavior", {
+        "behavior": "allow",
+        "downloadPath": DOWNLOAD_DIR
+    })
+    
+    # Use JS to simulate an <a href download> to force the PDF download
+    logging.info("Triggering PDF download via simulated anchor link...")
+    driver.execute_script(f"""
+        const link = document.createElement('a');
+        link.href = '{pdf_url}';
+        link.download = '';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    """)
+    
+    # Wait and verify download
+    logging.info("Waiting for download to complete...")
+    time.sleep(10)
+    
+    pdf_files = [f for f in os.listdir(DOWNLOAD_DIR) if f.endswith('.pdf')]
+    if pdf_files:
+        pdf_files.sort(key=lambda f: os.path.getmtime(os.path.join(DOWNLOAD_DIR, f)))
+        latest_pdf = pdf_files[-1]
+        full_path = os.path.join(DOWNLOAD_DIR, latest_pdf)
+        file_size = os.path.getsize(full_path)
+        logging.info(f"PDF downloaded successfully to: {full_path} ({file_size} bytes)")
     else:
-        logging.error(f"Failed to download PDF via requests. Status code: {response.status_code}")
-        logging.error(f"Content-Type received: {response.headers.get('Content-Type')}")
+        logging.error("Download failed. No .pdf file found.")
 
 finally:
     driver.quit()
