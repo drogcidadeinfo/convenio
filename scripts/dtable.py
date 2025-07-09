@@ -235,11 +235,6 @@ try:
     # Run report
     logging.info("Triggering report download...")
     driver.find_element(By.ID, "runReport").click()
-    driver.save_screenshot("debug_github_screenshot.png")
-    print("Screenshot saved for GitHub debugging.")
-
-    time.sleep(15)
-
     # Get the PDF URL
     pdf_url = driver.current_url
     logging.info(f"Detected PDF URL: {pdf_url}")
@@ -264,6 +259,9 @@ try:
     # Wait and verify download
     logging.info("Waiting for download to complete...")
     time.sleep(10)
+
+    driver.save_screenshot("debug_github_screenshot.png")
+    print("Screenshot saved for GitHub debugging.")
     
     pdf_files = [f for f in os.listdir(DOWNLOAD_DIR) if f.endswith('.pdf')]
     if pdf_files:
