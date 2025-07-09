@@ -97,40 +97,23 @@ try:
     main_window = driver.current_window_handle
     driver.find_element(By.ID, "runReport").click()
 
-    # Grab current URL (should be the .pdf URL)
+    # Grab current URL
     pdf_url = driver.current_url
     logging.info(f"Detected PDF URL: {pdf_url}")
-
-    # Force the download by navigating to the URL again
+    
+    # Force Chrome to download instead of viewing
+    driver.execute_cdp_cmd("Page.setDownloadBehavior", {
+        "behavior": "allow",
+        "downloadPath": DOWNLOAD_DIR,
+    })
+    
+    # Visit PDF URL again to trigger download
     driver.get(pdf_url)
-
-    # Wait for download
-    # time.sleep(10)
-
-    # Wait for new window
-    """time.sleep(3)
-    all_windows = driver.window_handles
-
-    if len(all_windows) > 1:
-        new_window = [w for w in all_windows if w != main_window][0]
-        driver.switch_to.window(new_window)
-        time.sleep(2)
-        pdf_url = driver.current_url
-        logging.info(f"PDF URL detected: {pdf_url}")
-
-        # Visit PDF URL again (download should be forced)
-        driver.get(pdf_url)
-        time.sleep(5)
-
-        driver.close()
-        driver.switch_to.window(main_window)
-    else:
-        logging.warning("No new window detected. Report may not have opened.")"""
-
-    # Wait for file to finish downloading
+    
+    # Wait for download to finish
     logging.info("Waiting for download to complete...")
     time.sleep(10)
-
+    
     # Check for .pdf file
     pdf_files = [f for f in os.listdir(DOWNLOAD_DIR) if f.endswith('.pdf')]
     if pdf_files:
