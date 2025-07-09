@@ -40,6 +40,9 @@ chrome_options = Options()
 chrome_options.add_argument("--headless")
 chrome_options.add_argument("--no-sandbox")
 chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--window-size=1920,1080")  # Set dimensions
+chrome_options.add_argument("--start-maximized")  # Maximize window
+chrome_options.add_argument("--force-device-scale-factor=1")  # Prevent scaling
 chrome_options.add_experimental_option("prefs", {
     "download.default_directory": DOWNLOAD_DIR,
     "plugins.always_open_pdf_externally": True,
