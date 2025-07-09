@@ -33,11 +33,15 @@ jobs:
           password: ${{ secrets.PASSWORD }}
         run: python scripts/dtable.py
 
-      - name: Upload screenshot
+      - name: Upload all debug artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: debug-screenshot
-          path: debug_github_screenshot.png
+          name: debug-artifacts
+          path: |
+            debug_github_screenshot_1.png
+            debug_github_screenshot_2.png
+            debug_github_screenshot_3.png
+            logs/debug_output.log
 
       # - name: Process PDF file and send E-mail
         # env:
