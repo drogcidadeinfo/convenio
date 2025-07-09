@@ -206,7 +206,10 @@ try:
     driver.find_element(By.ID, "sideMenuSearch").click()
     time.sleep(2)
     driver.find_element(By.CSS_SELECTOR, '[title="Contas Receber ou Recebidas"]').click()
-    WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
+    WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'")
+    time.sleep(15)
+    driver.save_screenshot("debug_github_screenshot_1.png")
+    print("Screenshot saved for GitHub debugging.")
 
     # Report filters
     WebDriverWait(driver, 20).until(EC.element_to_be_clickable((By.ID, "agrup_fil_2"))).click()
@@ -225,7 +228,7 @@ try:
     time.sleep(5)
     driver.find_element(By.ID, "dat_fim").send_keys(fim)
     time.sleep(5)
-    driver.save_screenshot("debug_github_screenshot.png")
+    driver.save_screenshot("debug_github_screenshot_2.png")
     print("Screenshot saved for GitHub debugging.")
     WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "tabTabdhtmlgoodies_tabView1_0"))).click()
 
@@ -262,7 +265,7 @@ try:
     logging.info("Waiting for download to complete...")
     time.sleep(10)
 
-    driver.save_screenshot("debug_github_screenshot.png")
+    driver.save_screenshot("debug_github_screenshot_3.png")
     print("Screenshot saved for GitHub debugging.")
     
     pdf_files = [f for f in os.listdir(DOWNLOAD_DIR) if f.endswith('.pdf')]
