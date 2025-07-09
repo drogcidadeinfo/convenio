@@ -235,7 +235,7 @@ try:
     filial = WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "cod_filvendEntrada")))
     filial.send_keys("1")
     filial.send_keys(Keys.ENTER)
-    time.sleep(2)
+    time.sleep(10)
 
     # Run report
     logging.info("Triggering report download...")
