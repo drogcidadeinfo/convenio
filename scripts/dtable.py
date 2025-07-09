@@ -125,7 +125,7 @@ try:
 
     # get the most recent downloaded file
     files = os.listdir(DOWNLOAD_DIR)
-    downloaded_files = [f for f in files if f.endswith('.pdf')]
+    downloaded_files = [f for f in files if f.endswith('.crdownload')]
     if downloaded_files:
         # sort files by modifi time
         downloaded_files.sort(key=lambda x: os.path.getmtime(os.path.join(DOWNLOAD_DIR, x)))
