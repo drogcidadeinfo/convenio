@@ -206,7 +206,7 @@ try:
     driver.find_element(By.ID, "sideMenuSearch").click()
     time.sleep(2)
     driver.find_element(By.CSS_SELECTOR, '[title="Contas Receber ou Recebidas"]').click()
-    WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'")
+    WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
     time.sleep(15)
     driver.save_screenshot("debug_github_screenshot_1.png")
     print("Screenshot saved for GitHub debugging.")
