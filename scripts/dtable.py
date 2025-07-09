@@ -97,8 +97,18 @@ try:
     main_window = driver.current_window_handle
     driver.find_element(By.ID, "runReport").click()
 
+    # Grab current URL (should be the .pdf URL)
+    pdf_url = driver.current_url
+    logging.info(f"Detected PDF URL: {pdf_url}")
+
+    # Force the download by navigating to the URL again
+    driver.get(pdf_url)
+
+    # Wait for download
+    # time.sleep(10)
+
     # Wait for new window
-    time.sleep(3)
+    """time.sleep(3)
     all_windows = driver.window_handles
 
     if len(all_windows) > 1:
@@ -115,7 +125,7 @@ try:
         driver.close()
         driver.switch_to.window(main_window)
     else:
-        logging.warning("No new window detected. Report may not have opened.")
+        logging.warning("No new window detected. Report may not have opened.")"""
 
     # Wait for file to finish downloading
     logging.info("Waiting for download to complete...")
