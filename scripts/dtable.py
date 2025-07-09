@@ -35,6 +35,13 @@ fim = f"{report_date.strftime('%d/%m/%Y')}"
 # Setup download directory
 DOWNLOAD_DIR = os.getcwd()
 
+directory = DOWNLOAD_DIR
+files = [f for f in os.listdir(directory) if os.path.isfile(os.path.join(directory, f))]
+
+print("Only files:")
+for file in files:
+    print(file)
+
 # Set Chrome options first
 chrome_options = Options()
 chrome_options.add_argument("--headless")
