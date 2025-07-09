@@ -69,12 +69,17 @@ for filename in remaining_files:
         logging.warning(f"No email mapping found for {filial_key}. Skipping.")
         continue
 
+    # Read the email body from file
+    with open("email_body.txt", "r", encoding="utf-8") as f:
+        email_body = f.read().format(filial_key=filial_key)
+
     # Compose Email
     msg = EmailMessage()
-    msg["Subject"] = "Teste E-mail/Convênio"
+    msg["Subject"] = "Relatório de Convênios – Separação para Entrega"
     msg["From"] = GMAIL_SENDER
     msg["To"] = receiver_email
-    msg.set_content(f"Segue relatório teste para {filial_key}.")
+    # msg.set_content(f"Segue relatório teste para {filial_key}.")
+    msg.set_content(email_body)
 
     file_path = os.path.join(pdf_folder, filename)
     try:
