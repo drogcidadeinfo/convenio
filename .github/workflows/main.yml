@@ -33,9 +33,9 @@ jobs:
           password: ${{ secrets.PASSWORD }}
         run: python scripts/dtable.py
 
-      - name: Process PDF file and send E-mail
-        env:
-          GSA_CREDENTIALS: ${{ secrets.GSA_CREDENTIALS }}
-          GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
-          EMAIL_MAP_BASE64: ${{ secrets.EMAIL_MAP_BASE64 }}
+      # - name: Process PDF file and send E-mail
+        # env:
+          # GSA_CREDENTIALS: ${{ secrets.GSA_CREDENTIALS }}
+          # GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
+          # EMAIL_MAP_BASE64: ${{ secrets.EMAIL_MAP_BASE64 }}
         # run: python scripts/edit_&_send.py
