@@ -84,8 +84,7 @@ try:
     time.sleep(5)
 
     driver.find_element(By.CSS_SELECTOR, '[title="Contas Receber ou Recebidas"]').click()
-
-    WebDriverWait(driver, 10).until(lambda x: x.execute_script("return document.readyState === 'complete'"))
+    time.sleep(15)
     
     for id_value in ID_LIST:
         WebDriverWait(driver, 20).until(EC.presence_of_element_located((By.ID, "agrup_fil_2"))).click()
