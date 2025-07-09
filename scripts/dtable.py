@@ -59,8 +59,8 @@ try:
     driver.get("http://drogcidade.ddns.net:4647/sgfpod1/Login.pod")
     
     # Add this at startup
-    logging.info(f"Download directory set to: {download_dir}")
-    os.makedirs(download_dir, exist_ok=True)
+    logging.info(f"Download directory set to: {DOWNLOAD_DIR}")
+    os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "id_cod_usuario"))).send_keys(username)
     WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.ID, "nom_senha"))).send_keys(password)
