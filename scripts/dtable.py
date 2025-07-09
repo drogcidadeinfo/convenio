@@ -97,17 +97,20 @@ try:
     main_window = driver.current_window_handle
     driver.find_element(By.ID, "runReport").click()
 
-    # Grab current URL
-    pdf_url = driver.current_url
-    logging.info(f"Detected PDF URL: {pdf_url}")
-    
-    # Force Chrome to download instead of viewing
+    # Force Chrome to download instead of viewing BEFORE visiting URL
     driver.execute_cdp_cmd("Page.setDownloadBehavior", {
         "behavior": "allow",
         "downloadPath": DOWNLOAD_DIR,
     })
     
-    # Visit PDF URL again to trigger download
+    # Wait a moment to ensure setting is applied
+    time.sleep(1)
+    
+    # Grab current URL
+    pdf_url = driver.current_url
+    logging.info(f"Detected PDF URL: {pdf_url}")
+    
+    # Revisit the URL to trigger download
     driver.get(pdf_url)
     
     # Wait for download to finish
