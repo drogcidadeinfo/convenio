@@ -18,7 +18,8 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 username = os.getenv("username")
 password = os.getenv("password")
 
-ID_LIST = [1, 2, 4, 9, 10, 12, 15, 18]
+# ID_LIST = [1, 2, 4, 9, 10, 12, 15, 18]
+ID_LIST = [1, 2]
 
 if not username or not password:
     raise ValueError("Environment variables 'user' and/or 'password' not set.")
