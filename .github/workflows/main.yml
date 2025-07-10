@@ -48,4 +48,5 @@ jobs:
           GSA_CREDENTIALS: ${{ secrets.GSA_CREDENTIALS }}
           GMAIL_SENDER: ${{ secrets.GMAIL_SENDER }}
           EMAIL_MAP_BASE64: ${{ secrets.EMAIL_MAP_BASE64 }}
+          EMAIL_BODY: ${{ secrets.EMAIL_BODY }}
         run: python scripts/edit_and_send.py
