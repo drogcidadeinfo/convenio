@@ -85,8 +85,10 @@ for filename in remaining_files:
         continue
 
     # Read the email body from file
-    with open("email_body.txt", "r", encoding="utf-8") as f:
-        email_body = f.read().format(filial_key=filial_key)
+    raw_email_body = os.getenv("EMAIL_BODY")
+    if not raw_email_body:
+        raise ValueError("EMAIL_BODY secret not set.")
+    email_body = raw_email_body.format(filial_key=filial_key)
 
     # Compose Email
     msg = EmailMessage()
