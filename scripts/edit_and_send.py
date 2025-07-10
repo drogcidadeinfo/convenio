@@ -2,6 +2,8 @@ import os
 import logging
 import json
 import base64
+import tempfile
+import stat
 from PyPDF2 import PdfReader
 from email.message import EmailMessage
 from google.oauth2 import service_account
@@ -12,16 +14,29 @@ from googleapiclient.discovery import build
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 # ───── Gmail API Auth Setup ─────
-SERVICE_ACCOUNT_FILE = os.getenv("GSA_CREDENTIALS")
-GMAIL_SENDER = os.getenv("GMAIL_SENDER") 
-
+GMAIL_SENDER = os.getenv("GMAIL_SENDER")
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
 
-creds = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES
-)
-delegated_creds = creds.with_subject(GMAIL_SENDER)
-service = build("gmail", "v1", credentials=delegated_creds)
+service_account_json = os.getenv("GSA_CREDENTIALS")
+if not service_account_json:
+    raise ValueError("GSA_CREDENTIALS environment variable not set.")
+
+# Create a temp file with restricted permissions
+with tempfile.NamedTemporaryFile(mode="w", delete=False, suffix=".json") as temp:
+    temp.write(service_account_json)
+    temp_path = temp.name
+
+# Restrict permissions (owner read/write only) - optional in Git but safer in other environments
+os.chmod(temp_path, stat.S_IRUSR | stat.S_IWUSR)
+
+try:
+    creds = service_account.Credentials.from_service_account_file(
+        temp_path, scopes=SCOPES
+    )
+    delegated_creds = creds.with_subject(GMAIL_SENDER)
+    service = build("gmail", "v1", credentials=delegated_creds)
+finally:
+    os.remove(temp_path)  # Always delete the temp file
 
 # ───── Email Mapping ─────
 # Load email mapping from GitHub secret
